@@ -1,7 +1,7 @@
 # Brotoscope
 
 **Status: the first scope is here.** The **brim wave** scope runs in your browser (2-D canvas, no GPU needed):
-**[open it](https://demo.bristorbrot.org/brotoscope/scopes/brimwave/)**. It draws the border of the brotoid's map (where the
+**[open it](https://dougbristor.github.io/brotoscope/scopes/brimwave/)**. It draws the border of the brotoid's map (where the
 Jacobian determinant is zero) as a wave, and marks where a ball of chosen centre and radius meets it. The rest of the
 Brotoscope is still a plan, described below; more scopes will arrive here as each one is checked.
 
