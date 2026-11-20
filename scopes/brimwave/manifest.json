@@ -1,0 +1,41 @@
+{
+  "scope": "brimwave",
+  "generated": "2026-11-20",
+  "files": {
+    "code/bristor_square_jacobian/v1.js": "370ebcf17164bce80ff069dc3e07197218d371ed7add7f9ed8ac4b223960e6b4",
+    "code/brotoid_moments/v1.js": "5bd37353c50d299a40a4e056225bde40d5265e7c6b844adcbbcbb0b9bb03b9c0",
+    "code/brotoid_weft/v1.js": "571e29312fc6ecb964684d7c13f5cfae7b546970402de131dd61c1cd9743ad6f",
+    "code/copy_ref/v1.js": "86eb50df2c69f9c41a9383d727ae36f6ae238e58c7a9ae2dcbd1706be643b44d",
+    "host.html": "86627b01dff2276b984e3a8445f1f9392061ce0f28311a704501556e23458a7d",
+    "index.html": "f078560eee511ac162e68c83f18171c38b7e4be41f5a0435b2a849bdde66a87a",
+    "scope.js": "17b756f4a0397c61248e6881e63190f971f25f71e6176e5f7e9aa209a8e7c6c2",
+    "scope.json": "5fb2a751d4f81d88ef2e4d371607aec6e552a8e0ae90a0fedf6a227d8567f5b4",
+    "wave.js": "abec0b41dbd8c1552fa61882005448094c124b31e21d5dc7e110a629bb561005"
+  },
+  "blocks": {
+    "brotoid_weft": {
+      "path": "code/brotoid_weft/v1.js",
+      "source_sha256": "19d3de85880fcf4c03e9215ea59a780e22eae82f20aefcdcaf4daca571c890a0",
+      "published_sha256": "571e29312fc6ecb964684d7c13f5cfae7b546970402de131dd61c1cd9743ad6f",
+      "note": "comments rewritten for publication; the code is AST-identical to the source block"
+    },
+    "bristor_square_jacobian": {
+      "path": "code/bristor_square_jacobian/v1.js",
+      "source_sha256": "8977f09308ef1ad926d90921c5cffc5f34178d6f2c1a96335c830d753bd6c544",
+      "published_sha256": "370ebcf17164bce80ff069dc3e07197218d371ed7add7f9ed8ac4b223960e6b4",
+      "note": "comments rewritten for publication; the code is AST-identical to the source block"
+    },
+    "brotoid_moments": {
+      "path": "code/brotoid_moments/v1.js",
+      "source_sha256": "7b9b6366402a5afef4cecd991ae9d9fee29bcce1b6fe3b4bbb87a9fd3c3cdd4a",
+      "published_sha256": "5bd37353c50d299a40a4e056225bde40d5265e7c6b844adcbbcbb0b9bb03b9c0",
+      "note": "comments rewritten for publication; the code is AST-identical to the source block"
+    },
+    "copy_ref": {
+      "path": "code/copy_ref/v1.js",
+      "source_sha256": "5246a2f4fcd6f3cb8b31302c6de8f753b4c7dcba01750342c18e526288ba7eb8",
+      "published_sha256": "86eb50df2c69f9c41a9383d727ae36f6ae238e58c7a9ae2dcbd1706be643b44d",
+      "note": "comments rewritten for publication; the code is AST-identical to the source block"
+    }
+  }
+}

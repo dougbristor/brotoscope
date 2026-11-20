@@ -1,0 +1,86 @@
+{
+  "id": "brimwave",
+  "title": "Brim wave",
+  "owner": "Doug Bristor",
+  "status": "public v0",
+  "render": "cpu-2d",
+  "algebra": "B2",
+  "part": {
+    "module": "wave.js",
+    "mount": "mount(canvas, settings, { plant, onDraw })",
+    "returns": [
+      "set",
+      "state",
+      "still",
+      "destroy",
+      "checks",
+      "draw"
+    ],
+    "settings": [
+      "org",
+      "ph",
+      "cyc",
+      "yz",
+      "map",
+      "parts",
+      "marks",
+      "ring",
+      "run",
+      "spd",
+      "q",
+      "qm",
+      "r"
+    ]
+  },
+  "seats": [
+    {
+      "id": "wave",
+      "title": "the wave",
+      "preset": {
+        "ring": false
+      }
+    },
+    {
+      "id": "ring",
+      "title": "the wave + the ball's ring",
+      "preset": {
+        "q": [
+          30,
+          10
+        ],
+        "r": 0.3,
+        "qm": 0.9
+      }
+    }
+  ],
+  "plugins": [
+    "copy_ref"
+  ],
+  "checks": {
+    "part": {
+      "call": "checks()",
+      "rows": "C1-C7",
+      "pass": "every row true",
+      "plants": {
+        "plant 1": "C1, C2 fail",
+        "plant 2": "C5, C6 fail",
+        "plant 3": "only C7 fails"
+      }
+    },
+    "host": {
+      "page": "host.html",
+      "rows": "H1-H6",
+      "pass": "window.__host.pass === true",
+      "plants": {
+        "?plant=dropq": "only H2 fails"
+      }
+    },
+    "split": "2026-11-20: 42/42 panel shots pixel-identical before and after the part was split from the page (7 states including 3 plants); with plant 1 the wave differs by 11920 px"
+  },
+  "blocks": [
+    "brotoid_weft",
+    "bristor_square_jacobian",
+    "brotoid_moments",
+    "copy_ref"
+  ]
+}

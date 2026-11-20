@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brim wave scope</title>
+<style>
+:root { --bg: #0d0f14; --panel: #151821; --ink: #e9e5dc; --dim: #8b8f9c; --grid: rgba(233,229,220,.09); --grid2: rgba(233,229,220,.22);
+  --trace: #ff4fa3; --eye: #ffe14d; --keep: #19e0ff; --mirror: #ff5a1f; --ring: #ffffff; --h1: #9dff3f; --h3: #b48cff; --hk: 12,70,84; --hm: 92,34,14; --line: #2a2e3a; }
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) { --bg: #f6f4ef; --panel: #ffffff; --ink: #1d1f24; --dim: #6a6e78; --grid: rgba(0,0,0,.07); --grid2: rgba(0,0,0,.2);
+  --trace: #c2185b; --eye: #8a6d00; --keep: #0b7f93; --mirror: #c2470f; --ring: #000; --h1: #3d7a00; --h3: #6a3fbf; --hk: 196,230,236; --hm: 246,210,192; --line: #ddd8cc; } }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 system-ui, sans-serif; }
+main { max-width: 1100px; margin: 0 auto; padding: 14px 16px 40px; }
+h1 { font-size: 18px; margin: 0 0 2px; font-weight: 600; }
+.sub { color: var(--dim); margin: 0 0 12px; }
+.scope { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px; }
+canvas { display: block; width: 100%; }
+#cv { aspect-ratio: 2.3 / 1; }
+#sp { height: 120px; }
+.row { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin: 10px 0; }
+.row label { display: inline-flex; gap: 6px; align-items: center; }
+input[type=range] { width: 160px; }
+button, select { background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 5px; padding: 3px 9px; font: inherit; cursor: pointer; }
+button[aria-pressed="true"] { border-color: var(--trace); color: var(--trace); }
+.mono { font-family: ui-monospace, monospace; font-size: 12.5px; }
+.cap { color: var(--dim); font-size: 12.5px; margin-top: 6px; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 760px) { .grid2 { grid-template-columns: 1fr; } }
+table { border-collapse: collapse; width: 100%; }
+td, th { padding: 2px 6px; text-align: right; border-bottom: 1px solid var(--line); }
+th:first-child, td:first-child { text-align: left; }
+#copied pre { white-space: pre-wrap; word-break: break-all; margin: 4px 0 0; color: var(--ink); }
+.val { display: inline-block; text-align: right; font-variant-numeric: tabular-nums; }
+#chip, #ringinfo { font-variant-numeric: tabular-nums; }
+#ringinfo { min-height: 4.4em; }
+#checks .ok { color: var(--h1); } #checks .bad { color: var(--mirror); font-weight: 600; }
+</style>
+</head>
+<body>
+<main>
+<h1>Brim wave scope</h1>
+<p class="sub">The pink border of the brotoid page's Fig 3 (map), on its own as a wave. Across: the sweep, the angle around from the phase origin. Up: the latitude where det J = 0 (toward 1). B2. The wave is the same for every q; the ring only marks where q is.</p>
+
+<div class="scope"><canvas id="cv"></canvas><div class="cap mono" id="chip"></div><div class="cap" id="ringinfo"></div></div>
+
+<div class="row">
+  <label>origin <select id="org"></select></label>
+  <label>phase <input type="range" id="ph" min="-180" max="180" step="0.5" value="0"><span class="mono val" id="phv" style="min-width:7.5ch"></span></label>
+  <label>cycles <input type="range" id="cyc" min="1" max="4" step="1" value="2"><span class="mono val" id="cycv" style="min-width:2ch"></span></label>
+  <label>height <select id="yz"><option value="40">±40°</option><option value="90">±90° (whole map)</option></select></label>
+</div>
+<div class="row">
+  <button id="map" aria-pressed="true">map behind</button>
+  <button id="parts" aria-pressed="false">1st + 3rd harmonics</button>
+  <button id="marks" aria-pressed="true">named directions</button>
+  <button id="run" aria-pressed="false">▶ roll the phase</button>
+  <label>speed <input type="range" id="spd" min="2" max="90" step="1" value="20"><span class="mono val" id="spdv" style="min-width:6ch"></span></label>
+  <label>q <input id="qin" class="mono" size="9" value="0,0" title="q direction: lon,lat in degrees"></label>
+</div>
+<div class="row">
+  <button id="ring" aria-pressed="true">ball's ring</button>
+  <label>r <input type="range" id="rr" min="0.02" max="1.6" step="0.005" value="0.6"><span class="mono val" id="rv" style="min-width:5.5ch"></span></label>
+  <label>|q| <input id="qmin" class="mono" type="number" min="0.05" max="2" step="0.05" value="0.9" style="width:5em"></label>
+  <button id="copy" title="copy a reference: page, every setting (* = changed), and a link that reopens this exact view">Copy settings</button>
+</div>
+<div class="cap mono" id="copied" hidden></div>
+<p class="cap"><b>Cycles</b> sets how many turns of the sweep fit across the scope. The window is always centred on the origin, so 1 cycle shows ±180° and 2 cycles show ±360°. Each turn is the same wave: it repeats every 360°. Half a turn on, it comes back upside down, with keep and mirror swapped: lat(ψ + 180°) = −lat(ψ) (check C3: the border is a cone). Check C7 tests the stronger fact, that det J itself is odd: det J(−d) = −det J(d), compared by value, because the swap of signs already follows from C3. So the map behind must start where the window starts. When it started half a turn out, it sat upside down against the wave on even cycle counts (caught and fixed 2026-10-23).</p>
+
+<div class="grid2">
+  <div class="scope"><canvas id="sp"></canvas><div class="cap">The wave's harmonics. Amplitude (bars) does not depend on the origin. Phase (number) does: 0° means the harmonic peaks at the origin. From a <b>seam</b> every phase is ±90°: sines only. The wave crosses zero there, and h1 and h3 rise through it together. From a <b>fold</b> every phase is 0° or 180°: cosines only. There h1 and h3 have opposite signs and pull against each other, so the fold is only a kiss.</div></div>
+  <div class="scope"><table class="mono" id="pk"></table><div class="cap">Peaks and dips, by sweep from the origin. Three of each per turn.</div></div>
+</div>
+<div class="cap mono" id="checks"></div>
+</main>
+<script type="module" src="./scope.js"></script>
+</body>
+</html>

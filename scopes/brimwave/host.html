@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brim wave host test</title>
+<style>
+body { margin: 0; background: #0d0f14; color: #e9e5dc; font: 14px/1.45 system-ui, sans-serif; }
+main { max-width: 1000px; margin: 0 auto; padding: 14px 16px 40px; }
+canvas { display: block; width: 100%; aspect-ratio: 2.3 / 1; background: #151821; margin: 8px 0; }
+.ok { color: #9dff3f; } .bad { color: #ff5a1f; font-weight: 600; } #out { font-family: ui-monospace, monospace; font-size: 12.5px; }
+</style>
+</head>
+<body>
+<main>
+<h1 style="font-size:18px">Brim wave: the part in a bare host</h1>
+<p style="color:#8b8f9c">No page controls and no colour variables (the part's own palette). Two seats of one part: "the wave" (default) and "the wave + the ball's ring" at q = (30°, 10°), r = 0.3.</p>
+<canvas id="a"></canvas>
+<canvas id="b"></canvas>
+<div id="out"></div>
+</main>
+<script type="module">
+import { mount, DEFAULTS } from './wave.js';
+const PLANT = new URLSearchParams(location.search).get('plant');   // 'dropq': a host-side set() that loses q; H2 must fail
+const rows = [], ok = (n, pass, v) => rows.push([n, !!pass, v]);
+const SEATS = { wave: { ring: false }, ring: { q: [30, 10], r: 0.3, qm: 0.9 } };
+const A = mount(document.getElementById('a'), SEATS.wave), B = mount(document.getElementById('b'), SEATS.ring);
+if (PLANT === 'dropq') { const s = B.set; B.set = (o, opt) => { const { q, ...rest } = o; return s(rest, opt); }; }
+// H1 the seats start as their presets, the rest at DEFAULTS
+const sa = A.state(), sb = B.state();
+ok('H1 seats start at preset + DEFAULTS', sa.ring === false && sa.org === DEFAULTS.org && sb.r === 0.3 && sb.q.join() === '30,10' && sb.ring === true, `${sa.ring}/${sb.q}`);
+// H2 set → state round trip on every key a host drives
+const want = { org: 45, ph: 12.5, cyc: 3, yz: 90, parts: true, marks: false, q: [-60, 20], qm: 1.1, r: 0.45 };
+B.set(want); const got = B.state(), miss = Object.keys(want).filter(k => JSON.stringify(got[k]) !== JSON.stringify(want[k]));
+ok('H2 set → state round trip (9 keys)', miss.length === 0, miss.length ? 'lost ' + miss.join(',') : '9/9');
+// H3 two mounts do not share state
+ok('H3 the two seats are independent', A.state().org === DEFAULTS.org && A.state().cyc === DEFAULTS.cyc, `A org ${A.state().org}`);
+// H4 still() is a PNG with something drawn on it
+const url = A.still(); ok('H4 still() is a PNG data URL', url.startsWith('data:image/png') && url.length > 5000, `${url.length} chars`);
+// H5 the part's own checks pass in the host (C1–C7)
+const ch = A.checks(); ok('H5 the part\'s checks C1–C7 pass', ch.every(r => r[1]), ch.filter(r => !r[1]).map(r => r[0].split(' ')[0]).join(',') || '7/7');
+// H6 after destroy, set() changes state but draws nothing
+const cv = document.getElementById('a'), before = cv.toDataURL(); A.destroy(); A.set({ ph: 90 }); const after = cv.toDataURL();
+ok('H6 destroy() stops drawing', before === after, before === after ? 'unchanged' : 'redrawn');
+document.getElementById('out').innerHTML = (PLANT ? `PLANT ${PLANT} · ` : '') + rows.map(([n, p, v]) => `<span class="${p ? 'ok' : 'bad'}">${p ? 'PASS' : 'FAIL'}</span> ${n} (${v})`).join('<br>');
+window.__host = { rows, pass: rows.every(r => r[1]) };
+</script>
+</body>
+</html>

@@ -1,11 +1,26 @@
 # Brotoscope
 
-**Status: intent only. There is no code here yet.** This repository holds the name and the plan for the Brotoscope,
-a unified research tool for looking at Bristorian and quaternion fractals. The work so far lives in separate,
-checked prototypes; a unified build will arrive here when it is ready and checked.
+**Status: the first scope is here.** The **brim wave** scope runs in your browser (2-D canvas, no GPU needed):
+**[open it](https://demo.bristorbrot.org/brotoscope/scopes/brimwave/)**. It draws the border of the brotoid's map (where the
+Jacobian determinant is zero) as a wave, and marks where a ball of chosen centre and radius meets it. The rest of the
+Brotoscope is still a plan, described below; more scopes will arrive here as each one is checked.
 
 **Website: [bristorbrot.org](https://bristorbrot.org)** · Main code: [dougbristor/bristorbrot](https://github.com/dougbristor/bristorbrot)
 (reusable algebra blocks and the simple player) · Try the player now: [bristorbrot.org/beta/viewer](https://bristorbrot.org/beta/viewer/)
+
+## What is here now
+
+- **[`scopes/brimwave/`](scopes/brimwave/)**: one scope. `wave.js` is the part (`mount(canvas, settings)` returns `set`, `state`,
+  `still`, `destroy`, `checks`); `index.html` and `scope.js` are the page around it; `host.html` is a bare host that
+  mounts the part twice and tests the interface (H1 to H6). The page's own checks C1 to C7 run in the page, and each
+  has a planted fault that must make it fail. `code/` holds the four checked blocks it uses, and `manifest.json` lists
+  every file with its hash.
+- **[`tools/check_manifest.py`](tools/check_manifest.py)**: `python3 tools/check_manifest.py scopes/brimwave` checks that
+  every listed file is present with its hash, nothing is unlisted, and every import resolves.
+
+The blocks in `code/` come from the project's CodeT source tree. For publication their comments were rewritten to
+remove internal references; the code is the same (the parsed syntax trees are identical, and `manifest.json` records
+both hashes).
 
 ## What it is for
 
