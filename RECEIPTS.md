@@ -12,7 +12,7 @@ trace the change back to its commit.
 - **What:** `scopes/brimwave/` (the part, its page, a bare host, four blocks in `code/`, a generated `manifest.json`) and
   `tools/check_manifest.py`. The README's status changes from "intent only" to "the first scope is here"; the plan
   below it is unchanged.
-- **Asked:** Doug Bristor. The scope was written with the project's analysis agent.
+- **Asked:** Doug Bristor. Minded by insights.
 - **Checked by:** on the published copy in a headless browser: the bare host's interface tests H1 to H6 pass, and with
   the planted fault (`?plant=dropq`) only H2 fails; the page's checks C1 to C7 pass; the wave canvas is byte-identical
   to the source page's. The four blocks' syntax trees equal the source blocks' (comments rewritten for publication
